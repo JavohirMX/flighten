@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var path: [AppRoute] = []
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            HomeView(categories: AppMockData.categories)
+                .navigationDestination(for: AppRoute.self) { route in
+                    switch route {
+                    case .recentChats(let category):
+                        RecentChatsListView(category: category, chats: AppMockData.chats(for: category))
+                    case .transcript(let chat):
+                        LiveTranscriptView(chat: chat)
+                    }
+                }
         }
-        .padding()
     }
 }
 
